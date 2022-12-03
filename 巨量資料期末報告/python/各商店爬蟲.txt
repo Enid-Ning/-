@@ -1,0 +1,128 @@
+#露天
+from lib2to3.pgen2 import driver
+
+from selenium import webdriver
+from bs4 import BeautifulSoup as bs
+from selenium.webdriver.chrome.service import Service
+
+s=Service(r"C:\Users\enidl\Downloads\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(service=s)
+
+
+url = input('請輸入網址: ')
+
+driver.get(url)
+html=driver.page_source
+soup=bs(html,'html.parser')
+datas = soup.select('#main_form > div:nth-child(1) > strong')
+for data in datas:
+    price=data.text
+datas= soup.select('#goodsMain > div.rt-flex-grid-4-5 > div > div:nth-child(2) > h1 > span')
+for data in datas:
+    name=data.text
+datas= soup.select('#goodsMain > div.rt-flex-grid-4-5 > div > div:nth-child(2) > div > div.intro-section-left.product-intro > div > div.item-gallery > div > div.item-gallery-main-image.rt-align-center.item-has-thumbnail > img')
+pic='s'
+for data in datas:
+    pic=data['src']
+print('prices: '+price+'\nname: '+name+'\npicture: '+pic)
+driver.quit
+.......................................................................................
+#pchome
+
+from lib2to3.pgen2 import driver
+
+from selenium import webdriver
+from bs4 import BeautifulSoup as bs
+from selenium.webdriver.chrome.service import Service
+
+s=Service(r"C:\Users\enidl\Downloads\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(service=s)
+
+
+url = input('請輸入網址')
+
+driver.get(url)
+html=driver.page_source
+#print(html)
+soup=bs(html,'html.parser')
+
+datas= soup.select('#NickContainer')
+for data in datas:
+    name=data.text
+
+datas = soup.select('#PriceTotal')
+for data in datas:
+    price=data.text
+
+datas= soup.select('#ImgContainer > div > img')
+for data in datas:
+    pic=data['src']
+
+print('name: '+name+'\nprices: '+price+'\npicture: '+pic)
+driver.quit
+
+.................................................................
+#momo
+from lib2to3.pgen2 import driver
+from selenium import webdriver
+from bs4 import BeautifulSoup as bs
+from selenium.webdriver.chrome.service import Service
+
+s=Service(r"C:\Users\enidl\Downloads\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(service=s)
+
+
+url = input('請輸入網址')
+
+driver.get(url)
+html=driver.page_source
+#print(html)
+soup=bs(html,'html.parser')
+
+datas= soup.select('#osmGoodsName')
+for data in datas:
+    name=data.text
+
+datas = soup.select('#productForm > div.prdwarp > div.prdnoteArea.jsCartFloat > ul.prdPrice > li.special > span')
+for data in datas:
+    price=data.text
+
+datas= soup.select('#goodsimg > a > div > img')
+for data in datas:
+    pic=data['src']
+
+print('name: '+name+'\nprices: '+price+'\npicture: '+pic)
+driver.quit
+........................................................................
+#8591
+
+from lib2to3.pgen2 import driver
+from selenium import webdriver
+from bs4 import BeautifulSoup as bs
+from selenium.webdriver.chrome.service import Service
+
+s=Service(r"C:\Users\enidl\Downloads\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(service=s)
+
+
+url = input('請輸入網址')
+
+driver.get(url)
+html=driver.page_source
+#print(html)
+soup=bs(html,'html.parser')
+
+datas= soup.select('#Wmian > div.Wcontain > div.Wtitile')
+for data in datas:
+    name=data.text.split()
+
+datas = soup.select('#Wmian > div.Wcontain > div.Wline.price-row.s2016-wd-cnt > span.Wvalue.Wprice')
+for data in datas:
+    price=data.text.split()
+
+datas= soup.select('#Wmian > div.Wleft > div > img')
+for data in datas:
+    pic=data['src']
+
+print('name: '+str(name))
+print('prices: '+str(price))l

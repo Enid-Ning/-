@@ -1,0 +1,222 @@
+import urllib.request
+url="https://fchart.github.io/life.html"
+response = urllib.request.urlopen(url)
+contents = response.read()
+print(contents.decode())
+response.close()
+
+---------------------------------------------
+import requests
+from bs4 import BeautifulSoup
+url = "https://fchart.github.io/"
+response = requests.get(url)
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text,'html.parser')
+    tags = soup("a")
+    for tag in tags:
+         print(tag.get("href",None))
+else:
+    print("wrong")
+------------------------------------------------
+
+
+import requests
+from bs4 import BeautifulSoup
+url = "https://fchart.github.io/"
+response = requests.get(url)
+
+
+
+soup = BeautifulSoup(response.text,'html.parser')
+tags = soup.find_all("a")
+
+print(tags[12])
+tag = tags[12]
+print("網址",tag.get("href",None))
+print("標籤文字",tag.text)
+print("屬性",tag["target"])
+tags = soup("img")
+tag = tags[1]
+print("圖片網址",tag.get("src",None))
+print("alt屬性 ",tag["alt"])
+print("屬性",tag.attrs)
+
+
+---------------------------------------
+
+import requests
+from bs4 import BeautifulSoup
+url = "https://udn.com/news/index"
+response = requests.get(url)
+soup = BeautifulSoup(response.text,'html.parser')
+links = soup.find_all(class_='story-list__text')
+
+for link in links:
+    title=link.find('h3')
+    try:
+        print("      "+title.a['title'])
+        print(title.a['href'])
+    except:
+        pass
+------------------------------------
+
+import requests,json
+from bs4 import BeautifulSoup
+from datetime import datetime
+url = "https://udn.com/news/index"
+response = requests.get(url)
+soup = BeautifulSoup(response.text,'html.parser')
+links = soup.find_all(class_='story-list__text')
+headlines = list()
+for link in links:
+    title=link.find('h3')
+    try:
+        item = dict()
+        item['title']=title.a['title']
+        if not title.a['href'].startswith('http'):
+            item['link'] = "http://udn.com{}".format(title.a['href'])
+        else:
+            item['link']=title.a['href']
+        headlines.append(item)
+    except:
+        pass
+
+now=datetime.now()
+filename = now.strftime("%y-%m-%d-%H-%M-%S.json")
+with open(filename,"w",encoding='utf-8')as fp:
+    json.dump(headlines,fp)
+print(headlines)
+
+--------------------------------------------------
+import requests,re
+from bs4 import BeautifulSoup
+url = "https://udn.com/news/story/6656/6066804?from=udn-referralnews_ch2artbottom"
+html= requests.get(url).text
+soup = BeautifulSoup(html,'html.parser')
+regex = r'https?.[a-zA-Z0-9\./=]+\.jpg'
+regex2=r'j.[a-zA-Z0-9\./=\_]+\.gif'
+#regex = re.compile(r'http+jpg')
+links = soup.find_all({"img"})
+
+for link in links:
+    try:
+        #print(link.get("data-src",None))
+        
+        #print(link['src'])
+        r=re.search(regex, link.get("data-src",None))
+        if r!=None:
+            print(r.group())
+        
+        #print(link['data-src'])
+        r=re.search(regex2, link.get('data-src',None))
+        if r!=None:
+            print(r.group())
+    except:
+        pass
+------------------------------------
+import requests,re
+import urllib.request as req
+from bs4 import BeautifulSoup
+url =" https://shopee.tw/%E3%80%90%E7%8F%BE%E8%B2%A8%E5%85%8D%E9%81%8B%E3%80%91%E9%BB%9E%E9%BB%9E%E6%AC%BE%E7%AB%8B%E9%AB%94%E5%87%B8%E7%B4%8B%E4%B8%8D%E9%BB%8F%E8%BA%AB%E5%8A%A0%E5%8E%9A%E5%9E%8B%E8%BC%95%E4%BE%BF%E9%9B%A8%E8%A1%A3-i.40618111.2102999588?sp_atk=d427c306-6d0e-4c45-8607-648b8942077c"
+request=req.Request(url,headers=
+{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"})
+with req.urlopen(request) as response:
+    html=response.read().decode("utf-8")
+
+soup = BeautifulSoup(html,'html.parser')
+#print(soup)
+#regex = re.compile(r'http+jpg')
+links = soup.find("main")
+#find(class_='page-product')
+
+print(links)
+for link in links:
+    try:
+      
+      print(link2.text)
+
+    except:
+        pass
+-------------------------------------------
+from bs4 import BeautifulSoup
+import urllib.request as requests
+url = "https://udn.com/news/index"
+#response = requests.get(url)
+request=requests.Request(url,headers=
+{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"})
+#with requests.urlopen(request) as response:
+html=requests.urlopen(request).read().decode("utf-8")
+soup = BeautifulSoup(html,'html.parser')
+links = soup.find_all(class_='story-list__text')
+
+for link in links:
+    title=link.find('h3')
+    try:
+        print("      "+title.a['title'])
+        print(title.a['href'])
+    except:
+        pass
+
+-----------------------------------------------------
+
+from selenium import webdriver
+from bs4 import BeautifulSoup as bs
+from selenium.webdriver.chrome.service import Service
+
+s=Service(r"C:\Users\enidl\Downloads\chromedriver_win32\chromedriver.exe")
+web = webdriver.Chrome(service=s)
+url = "https://www.cwb.gov.tw/V8/C/W/OBS_County.html?ID=10017"
+web.get(url)
+html=web.page_source
+web.quit()
+soup = bs(html,'html.parser')
+#(id='County'
+regions=soup.select('#stations > tr:nth-child(1) > td:nth-child(3)')
+#print(regions)
+for region in regions:
+    try:
+        print(region.text)
+    except:
+        pass
+-----------------------------------------------------------------------
+import sqlite3
+db=sqlite3.connect("headlines.db")#建立文件headlines.db
+sql="CREATE TABLE IF NOT EXISTS titles (tno INTERGER PRIMARY KEY ,title TEXT NOT NULL ,link TEXT)"
+db.execute(sql)
+for i in range(1,6):
+    sql = "INSERT INTO titles(title ,link) values(?,?)"
+    db.cursor().execute(sql,('第{}筆標題'.format(i),'第{}個連結'.format(i)))
+db.commit()
+sql="select * from titles"
+rows = db.execute(sql)
+for row in rows:
+    print(row)
+db.close()
+
+--------------------------------------------------------------------------
+import sqlite3
+import requests
+from bs4 import BeautifulSoup
+url = 'https://ee.ntou.edu.tw/'
+html = requests.get(url).text
+soup = BeautifulSoup(html,'html.parser')
+datas= soup.select('#Dyn_1_2_1 > div > div')
+
+#print(datas)
+for data in datas:
+    try:
+        #print(data)
+        data = data.select('a')
+       # print(data)
+        for dat in data:
+            print(dat.text.strip()+' , '+dat['href'])
+    except:
+        pass
+.....................................................................
+'''cookiess =';'.join(['{}={}'.format(item.get('name'),item.get('value')) for item in driver.get_cookies()])
+headerss ={
+    'User-Agent':' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36'
+    ,'Cookie':cookiess
+}
+driver.implicitly_wait(10)
+html=requests.post(url,headerss)'''

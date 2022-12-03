@@ -1,0 +1,32 @@
+#把系官網新聞標題加連結放進sqllite
+import sqlite3
+import requests
+from bs4 import BeautifulSoup
+url = 'https://ee.ntou.edu.tw/'
+html = requests.get(url).text
+soup = BeautifulSoup(html,'html.parser')
+datas= soup.select('#Dyn_1_2_1 > div > div')
+text1=[]
+text2=[]
+#print(datas)
+for data in datas:
+    try:
+        #print(data)
+        data = data.select('a')
+       # print(data)
+        for dat in data:
+            text1.append(dat.text.strip())
+            text2.append( dat['href'])
+    except:
+        pass
+
+db=sqlite3.connect("schoolnews.db")
+db.execute('CREATE TABLE IF NOT EXISTS allnews (title TEXT NOT NULL ,link TEXT)')
+sql='INSERT INTO allnews(title ,link) values(?,?)'
+for i in range(0,len(text1)-1):
+    db.cursor().execute(sql,(text1[i],text2[i]))
+db.commit()
+rows = db.execute("select * from allnews")
+for row in rows:
+    print(row)
+db.close()
